@@ -1,0 +1,27 @@
+{
+    "nav": {
+        "home": "Home",
+        "pricing": "Pricing",
+        "about": "About",
+        "signIn": "Sign In",
+        "signUp": "Sign Up",
+        "dashboard": "Dashboard"
+    },
+    "hero": {
+        "title": "Transform your LinkedIn into an opportunity machine",
+        "subtitle": "AI-powered profile analysis, content generation and talent matching",
+        "cta": "Get started for free"
+    },
+    "dashboard": {
+        "welcome": "Welcome back",
+        "score": "Your profile score",
+        "lastAnalysis": "Last analysis"
+    },
+    "common": {
+        "loading": "Loading...",
+        "error": "Something went wrong",
+        "retry": "Try again",
+        "save": "Save",
+        "cancel": "Cancel"
+    }
+}

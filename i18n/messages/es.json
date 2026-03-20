@@ -1,0 +1,27 @@
+{
+    "nav": {
+        "home": "Inicio",
+        "pricing": "Precios",
+        "about": "Nosotros",
+        "signIn": "Iniciar sesión",
+        "signUp": "Registrarse",
+        "dashboard": "Panel"
+    },
+    "hero": {
+        "title": "Transforma tu LinkedIn en una máquina de oportunidades",
+        "subtitle": "Análisis de perfil con IA, generación de contenido y matchmaking de talento",
+        "cta": "Empieza gratis"
+    },
+    "dashboard": {
+        "welcome": "Bienvenido de nuevo",
+        "score": "Puntuación de tu perfil",
+        "lastAnalysis": "Último análisis"
+    },
+    "common": {
+        "loading": "Cargando...",
+        "error": "Algo salió mal",
+        "retry": "Intentar de nuevo",
+        "save": "Guardar",
+        "cancel": "Cancelar"
+    }
+}
