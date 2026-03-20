@@ -1,26 +1,28 @@
 # 📊 STATUS.md — LinkedIn AI Strategist
-> **Pega este archivo al inicio de cada sesión nueva junto al documento maestro LINKEDIN_AI_STRATEGIST.md**
-
----
 
 ## 🗓️ Última actualización
+
 Fecha: 20/03/2026
-Sesión: #1 — Planificación inicial
+Sesión: #1 — Fase 1 en curso
 
 ---
 
 ## 🚦 Fase actual
-**FASE 0 — Planificación completada. NO se ha escrito código todavía.**
+
+**FASE 1 — Fundamentos (en curso)**
 
 ---
 
 ## ✅ Fases completadas
+
 - [x] Fase 0 — Documentación y arquitectura del proyecto
 
 ## 🔄 Fase en curso
+
 - [ ] Fase 1 — Fundamentos (Next.js + i18n + Clerk + Supabase)
 
 ## ❌ Fases pendientes
+
 - [ ] Fase 2 — Perfil de usuario y onboarding
 - [ ] Fase 3 — Auditoría 360° (módulo estrella candidato)
 - [ ] Fase 4 — Ghostwriter AI
@@ -32,63 +34,62 @@ Sesión: #1 — Planificación inicial
 ---
 
 ## 📁 Archivos creados hasta ahora
-> Ninguno. El proyecto no ha sido inicializado todavía.
+
+- `.env.local` — variables de entorno (Supabase + Clerk)
+- `.vscode/settings.json` — i18n Ally configurado
+- `i18n/routing.ts`
+- `i18n/request.ts`
+- `i18n/messages/en.json`
+- `i18n/messages/es.json`
+- `middleware.ts` — Clerk + next-intl combinados
+- `next.config.ts` — plugin next-intl añadido
+- `app/layout.tsx` — simplificado
+- `app/[locale]/layout.tsx` — ClerkProvider + NextIntlClientProvider
+- `app/[locale]/page.tsx` — página de inicio básica
+- Estructura de carpetas completa creada
+- Shadcn/UI inicializado con preset Nova
+- Componentes UI: button, card, badge, dialog, input, textarea, progress, skeleton, tabs, tooltip
 
 ---
 
 ## ⏭️ Próxima tarea exacta
-```bash
-# Ejecutar esto para iniciar el proyecto
-npx create-next-app@latest linkedin-ai-strategist \
-  --typescript \
-  --tailwind \
-  --app \
-  --import-alias="@/*"
 
-cd linkedin-ai-strategist
-
-# Instalar dependencias de la Fase 1
-npm install next-intl @clerk/nextjs
-npm install @prisma/client prisma
-npm install zod
-npx shadcn@latest init
-```
-Después: configurar `middleware.ts` (Clerk + next-intl) según sección 7 del documento maestro.
+Configurar Prisma: aplicar schema completo al archivo `prisma/schema.prisma` y hacer push a Supabase. Activar extensión `pgvector` en Supabase SQL Editor.
 
 ---
 
 ## 🧠 Decisiones tomadas en sesiones anteriores
-> Ninguna todavía. Todo está en el documento maestro LINKEDIN_AI_STRATEGIST.md.
+
+- Shadcn preset: Nova (Lucide + Geist)
+- suppressHydrationWarning en body (Bitwarden)
+- i18n Ally configurado con localesPaths: i18n/messages
 
 ---
 
 ## 🐛 Errores conocidos / cosas pendientes de arreglar
-> Ninguno todavía.
 
----
-
-## 📝 Notas de sesiones anteriores
-> Ninguna todavía.
+- Ninguno
 
 ---
 
 ## 🔐 Servicios externos — Estado de configuración
-| Servicio | Cuenta creada | API Key en .env | Probado |
-|---|---|---|---|
-| Supabase | ❌ | ❌ | ❌ |
-| Clerk | ❌ | ❌ | ❌ |
-| Anthropic (Claude) | ❌ | ❌ | ❌ |
-| Google Gemini | ❌ | ❌ | ❌ |
-| OpenAI (Embeddings) | ❌ | ❌ | ❌ |
-| Stripe | ❌ | ❌ | ❌ |
-| Resend | ❌ | ❌ | ❌ |
-| Sentry | ❌ | ❌ | ❌ |
-| Vercel | ❌ | ❌ | ❌ |
+
+| Servicio            | Cuenta creada | API Key en .env | Probado |
+| ------------------- | ------------- | --------------- | ------- |
+| Supabase            | ✅            | ✅              | ❌      |
+| Clerk               | ✅            | ✅              | ❌      |
+| Anthropic (Claude)  | ❌            | ❌              | ❌      |
+| Google Gemini       | ❌            | ❌              | ❌      |
+| OpenAI (Embeddings) | ❌            | ❌              | ❌      |
+| Stripe              | ❌            | ❌              | ❌      |
+| Resend              | ❌            | ❌              | ❌      |
+| Sentry              | ❌            | ❌              | ❌      |
+| Vercel              | ❌            | ❌              | ❌      |
 
 ---
 
 ## 🤖 Instrucción para la IA
-Cuando recibas este archivo junto al documento maestro, debes:
+
 1. Leer el estado actual (fase, último archivo, próxima tarea)
 2. Revisar la tabla de servicios externos para saber qué está configurado
 3. NO repasar todo el documento maestro en voz alta, solo confirmarlo

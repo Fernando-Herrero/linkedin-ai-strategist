@@ -1,6 +1,7 @@
 # 🚀 LinkedIn AI Strategist — SaaS Full-Stack
+
 > **Documento Maestro del Proyecto** · Versión 1.0 · Contexto completo para desarrollo con IA
-> 
+>
 > ⚠️ **Instrucción para cualquier IA que lea esto:** Este es el documento base del proyecto. Léelo completo antes de escribir una sola línea de código. Cada decisión técnica, nombre de archivo y convención está aquí definida. Respétala.
 
 ---
@@ -36,11 +37,13 @@ No es un analizador de perfiles más. Es un **Estratega de Marca Personal** para
 ### El problema que resuelve
 
 **Para candidatos:**
+
 - El 87% de los recruiters rechaza perfiles en menos de 10 segundos por keywords incorrectas
 - La mayoría no sabe cómo escribir un "About" que convierta visitas en contactos
 - Construir autoridad en LinkedIn requiere consistencia de contenido que nadie tiene tiempo de mantener
 
 **Para empresas:**
+
 - Leer 200 CVs por vacante es ineficiente y sesgado
 - Las ofertas de trabajo mal redactadas atraen candidatos incorrectos
 - El matchmaking manual entre JD y candidatos es lento y subjetivo
@@ -76,28 +79,32 @@ Empresa sube Job Description
 
 ### Lo que NO hace ningún competidor actual
 
-| Feature | LinkedIn AI Strategist | LinkedIn Premium | CV parsers |
-|---|---|---|---|
-| Score de empleabilidad con IA | ✅ | ❌ | ❌ |
-| Reescritura de perfil en tu voz | ✅ | ❌ | ❌ |
-| Generador de posts diarios personalizados | ✅ | ❌ | ❌ |
-| Career Roadmap IA (skills gap) | ✅ | ❌ | ❌ |
-| Matchmaking semántico JD ↔ Candidato | ✅ | Básico | ❌ |
-| Generador de ofertas optimizadas | ✅ | ❌ | ❌ |
-| Bilingüe EN + ES | ✅ | ✅ | ❌ |
+| Feature                                   | LinkedIn AI Strategist | LinkedIn Premium | CV parsers |
+| ----------------------------------------- | ---------------------- | ---------------- | ---------- |
+| Score de empleabilidad con IA             | ✅                     | ❌               | ❌         |
+| Reescritura de perfil en tu voz           | ✅                     | ❌               | ❌         |
+| Generador de posts diarios personalizados | ✅                     | ❌               | ❌         |
+| Career Roadmap IA (skills gap)            | ✅                     | ❌               | ❌         |
+| Matchmaking semántico JD ↔ Candidato      | ✅                     | Básico           | ❌         |
+| Generador de ofertas optimizadas          | ✅                     | ❌               | ❌         |
+| Bilingüe EN + ES                          | ✅                     | ✅               | ❌         |
 
 ### Los 4 módulos estrella
 
 **1. Profile Auditor 360°**
+
 > Analiza texto del perfil de LinkedIn, asigna score 0-100 de empleabilidad y da feedback accionable punto por punto.
 
 **2. SEO Keyword Optimizer**
+
 > Compara el perfil con los términos más buscados por recruiters en el sector/rol objetivo. Muestra qué keywords faltan y dónde insertarlas.
 
 **3. Ghostwriter AI**
+
 > Aprende el estilo de escritura del usuario analizando sus posts pasados (o una muestra). Genera posts semanales en su voz que construyen autoridad.
 
 **4. Precision Matchmaking (B2B)**
+
 > Comparación semántica vectorial entre Job Descriptions y perfiles de candidatos. No keyword matching, sino comprensión real del contexto.
 
 ---
@@ -124,23 +131,27 @@ DEPLOYMENT        → Vercel (frontend + API routes)
 ### Decisiones clave explicadas
 
 **Clerk sobre NextAuth:**
+
 - Gestión de organizaciones nativa (perfecto para el módulo B2B de empresas)
 - Roles y permisos out-of-the-box (CANDIDATE / RECRUITER / ADMIN)
 - UI de auth lista, no hay que construirla
 - Webhooks para sincronizar usuarios con PostgreSQL
 
 **Supabase sobre Railway/Neon:**
+
 - PostgreSQL + Storage + pgvector en un solo servicio
 - Row Level Security (RLS) para seguridad de datos entre empresas
 - Dashboard visual para ver datos sin herramientas externas
 - Generoso tier gratuito para desarrollo y MVP
 
 **pgvector sobre Pinecone:**
+
 - Los embeddings viven en la misma DB que los datos → queries JOIN posibles
 - Sin servicio externo adicional que gestionar
 - Suficiente para las necesidades del MVP y primeros 10k usuarios
 
 **Claude como IA principal:**
+
 - Mejor calidad de escritura en castellano y en contextos profesionales
 - Más fiable para seguir instrucciones estructuradas (JSON output)
 - Gemini como fallback para tareas de análisis masivo (más barato por token)
@@ -800,48 +811,50 @@ La app es bilingüe desde el primer día: **Inglés (EN)** y **Español (ES)**.
 ### Configuración
 
 **`middleware.ts`** — Combina Clerk (auth) + next-intl (locale):
+
 ```typescript
 // middleware.ts
-import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
-import createIntlMiddleware from 'next-intl/middleware'
-import { routing } from './i18n/routing'
+import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+import createIntlMiddleware from "next-intl/middleware";
+import { routing } from "./i18n/routing";
 
-const intlMiddleware = createIntlMiddleware(routing)
+const intlMiddleware = createIntlMiddleware(routing);
 
 const isProtectedRoute = createRouteMatcher([
-  '/:locale/dashboard(.*)',
-  '/:locale/audit(.*)',
-  '/:locale/keywords(.*)',
-  '/:locale/ghostwriter(.*)',
-  '/:locale/roadmap(.*)',
-  '/:locale/jobs(.*)',
-  '/:locale/matching(.*)',
-  '/:locale/candidates(.*)',
-  '/:locale/settings(.*)',
-  '/:locale/admin(.*)',
-])
+    "/:locale/dashboard(.*)",
+    "/:locale/audit(.*)",
+    "/:locale/keywords(.*)",
+    "/:locale/ghostwriter(.*)",
+    "/:locale/roadmap(.*)",
+    "/:locale/jobs(.*)",
+    "/:locale/matching(.*)",
+    "/:locale/candidates(.*)",
+    "/:locale/settings(.*)",
+    "/:locale/admin(.*)",
+]);
 
 export default clerkMiddleware(async (auth, req) => {
-  if (isProtectedRoute(req)) {
-    await auth.protect()
-  }
-  return intlMiddleware(req)
-})
+    if (isProtectedRoute(req)) {
+        await auth.protect();
+    }
+    return intlMiddleware(req);
+});
 
 export const config = {
-  matcher: ['/((?!api|_next|.*\\..*).*)']
-}
+    matcher: ["/((?!api|_next|.*\\..*).*)"],
+};
 ```
 
 **`i18n/routing.ts`:**
+
 ```typescript
-import { defineRouting } from 'next-intl/routing'
+import { defineRouting } from "next-intl/routing";
 
 export const routing = defineRouting({
-  locales: ['en', 'es'],
-  defaultLocale: 'en',
-  localePrefix: 'always'
-})
+    locales: ["en", "es"],
+    defaultLocale: "en",
+    localePrefix: "always",
+});
 ```
 
 ### Estructura de traducciones
@@ -849,158 +862,158 @@ export const routing = defineRouting({
 ```json
 // i18n/messages/en.json
 {
-  "common": {
-    "loading": "Loading...",
-    "error": "Something went wrong",
-    "retry": "Try again",
-    "save": "Save",
-    "cancel": "Cancel",
-    "upgrade": "Upgrade plan",
-    "freePlan": "Free",
-    "proPlan": "Pro",
-    "enterprisePlan": "Enterprise"
-  },
-  "nav": {
-    "dashboard": "Dashboard",
-    "audit": "Profile Audit",
-    "keywords": "Keyword Optimizer",
-    "ghostwriter": "AI Ghostwriter",
-    "roadmap": "Career Roadmap",
-    "jobs": "Job Positions",
-    "matching": "AI Matching",
-    "candidates": "Candidates",
-    "settings": "Settings"
-  },
-  "audit": {
-    "title": "Profile Audit 360°",
-    "subtitle": "Paste your LinkedIn profile and get an AI-powered employability score",
-    "placeholder": "Paste your LinkedIn About section and work experience here...",
-    "analyzeButton": "Analyze my profile",
-    "analyzing": "Analyzing your profile with AI...",
-    "score": "Employability Score",
-    "strengths": "Strengths",
-    "improvements": "Areas to improve",
-    "missingKeywords": "Missing keywords",
-    "actionPlan": "Action plan"
-  },
-  "ghostwriter": {
-    "title": "AI Ghostwriter",
-    "subtitle": "Generate LinkedIn posts in your voice",
-    "topicLabel": "What do you want to post about?",
-    "toneLabel": "Tone",
-    "tones": {
-      "professional": "Professional",
-      "casual": "Casual",
-      "thoughtLeader": "Thought Leader"
+    "common": {
+        "loading": "Loading...",
+        "error": "Something went wrong",
+        "retry": "Try again",
+        "save": "Save",
+        "cancel": "Cancel",
+        "upgrade": "Upgrade plan",
+        "freePlan": "Free",
+        "proPlan": "Pro",
+        "enterprisePlan": "Enterprise"
     },
-    "generateButton": "Generate post",
-    "generating": "Writing your post...",
-    "copyButton": "Copy to clipboard",
-    "regenerate": "Regenerate"
-  },
-  "matching": {
-    "title": "AI Matching",
-    "subtitle": "Find the most compatible candidates for each position",
-    "selectJob": "Select a job position",
-    "runMatching": "Run AI matching",
-    "processing": "Comparing profiles with AI...",
-    "matchScore": "Match score",
-    "strengths": "Candidate strengths",
-    "gaps": "Skill gaps",
-    "generateCoverLetter": "Generate cover letter"
-  },
-  "plans": {
-    "limitReached": "You've reached your plan limit",
-    "upgradeMessage": "Upgrade to Pro to continue using this feature",
-    "freeLimit": "{{count}} analyses per month on the free plan"
-  },
-  "errors": {
-    "notFound": "Page not found",
-    "serverError": "Server error. Please try again.",
-    "aiUnavailable": "AI service temporarily unavailable",
-    "profileLoad": "Could not load your profile",
-    "unauthorized": "You need to sign in to access this page",
-    "planRequired": "This feature requires a Pro or Enterprise plan"
-  }
+    "nav": {
+        "dashboard": "Dashboard",
+        "audit": "Profile Audit",
+        "keywords": "Keyword Optimizer",
+        "ghostwriter": "AI Ghostwriter",
+        "roadmap": "Career Roadmap",
+        "jobs": "Job Positions",
+        "matching": "AI Matching",
+        "candidates": "Candidates",
+        "settings": "Settings"
+    },
+    "audit": {
+        "title": "Profile Audit 360°",
+        "subtitle": "Paste your LinkedIn profile and get an AI-powered employability score",
+        "placeholder": "Paste your LinkedIn About section and work experience here...",
+        "analyzeButton": "Analyze my profile",
+        "analyzing": "Analyzing your profile with AI...",
+        "score": "Employability Score",
+        "strengths": "Strengths",
+        "improvements": "Areas to improve",
+        "missingKeywords": "Missing keywords",
+        "actionPlan": "Action plan"
+    },
+    "ghostwriter": {
+        "title": "AI Ghostwriter",
+        "subtitle": "Generate LinkedIn posts in your voice",
+        "topicLabel": "What do you want to post about?",
+        "toneLabel": "Tone",
+        "tones": {
+            "professional": "Professional",
+            "casual": "Casual",
+            "thoughtLeader": "Thought Leader"
+        },
+        "generateButton": "Generate post",
+        "generating": "Writing your post...",
+        "copyButton": "Copy to clipboard",
+        "regenerate": "Regenerate"
+    },
+    "matching": {
+        "title": "AI Matching",
+        "subtitle": "Find the most compatible candidates for each position",
+        "selectJob": "Select a job position",
+        "runMatching": "Run AI matching",
+        "processing": "Comparing profiles with AI...",
+        "matchScore": "Match score",
+        "strengths": "Candidate strengths",
+        "gaps": "Skill gaps",
+        "generateCoverLetter": "Generate cover letter"
+    },
+    "plans": {
+        "limitReached": "You've reached your plan limit",
+        "upgradeMessage": "Upgrade to Pro to continue using this feature",
+        "freeLimit": "{{count}} analyses per month on the free plan"
+    },
+    "errors": {
+        "notFound": "Page not found",
+        "serverError": "Server error. Please try again.",
+        "aiUnavailable": "AI service temporarily unavailable",
+        "profileLoad": "Could not load your profile",
+        "unauthorized": "You need to sign in to access this page",
+        "planRequired": "This feature requires a Pro or Enterprise plan"
+    }
 }
 ```
 
 ```json
 // i18n/messages/es.json
 {
-  "common": {
-    "loading": "Cargando...",
-    "error": "Algo salió mal",
-    "retry": "Intentar de nuevo",
-    "save": "Guardar",
-    "cancel": "Cancelar",
-    "upgrade": "Mejorar plan",
-    "freePlan": "Gratuito",
-    "proPlan": "Pro",
-    "enterprisePlan": "Empresa"
-  },
-  "nav": {
-    "dashboard": "Panel principal",
-    "audit": "Auditoría de perfil",
-    "keywords": "Optimizador SEO",
-    "ghostwriter": "Ghostwriter IA",
-    "roadmap": "Mapa de carrera",
-    "jobs": "Ofertas de trabajo",
-    "matching": "Matching IA",
-    "candidates": "Candidatos",
-    "settings": "Configuración"
-  },
-  "audit": {
-    "title": "Auditoría de Perfil 360°",
-    "subtitle": "Pega tu perfil de LinkedIn y obtén un score de empleabilidad con IA",
-    "placeholder": "Pega aquí tu sección About y experiencia laboral de LinkedIn...",
-    "analyzeButton": "Analizar mi perfil",
-    "analyzing": "Analizando tu perfil con IA...",
-    "score": "Score de Empleabilidad",
-    "strengths": "Puntos fuertes",
-    "improvements": "Áreas de mejora",
-    "missingKeywords": "Keywords que te faltan",
-    "actionPlan": "Plan de acción"
-  },
-  "ghostwriter": {
-    "title": "Ghostwriter IA",
-    "subtitle": "Genera posts de LinkedIn en tu voz",
-    "topicLabel": "¿Sobre qué quieres publicar?",
-    "toneLabel": "Tono",
-    "tones": {
-      "professional": "Profesional",
-      "casual": "Informal",
-      "thoughtLeader": "Líder de opinión"
+    "common": {
+        "loading": "Cargando...",
+        "error": "Algo salió mal",
+        "retry": "Intentar de nuevo",
+        "save": "Guardar",
+        "cancel": "Cancelar",
+        "upgrade": "Mejorar plan",
+        "freePlan": "Gratuito",
+        "proPlan": "Pro",
+        "enterprisePlan": "Empresa"
     },
-    "generateButton": "Generar post",
-    "generating": "Escribiendo tu post...",
-    "copyButton": "Copiar al portapapeles",
-    "regenerate": "Regenerar"
-  },
-  "matching": {
-    "title": "Matching IA",
-    "subtitle": "Encuentra los candidatos más compatibles para cada vacante",
-    "selectJob": "Selecciona una oferta de trabajo",
-    "runMatching": "Ejecutar matching IA",
-    "processing": "Comparando perfiles con IA...",
-    "matchScore": "Score de compatibilidad",
-    "strengths": "Puntos fuertes del candidato",
-    "gaps": "Carencias de habilidades",
-    "generateCoverLetter": "Generar carta de presentación"
-  },
-  "plans": {
-    "limitReached": "Has alcanzado el límite de tu plan",
-    "upgradeMessage": "Mejora a Pro para seguir usando esta función",
-    "freeLimit": "{{count}} análisis por mes en el plan gratuito"
-  },
-  "errors": {
-    "notFound": "Página no encontrada",
-    "serverError": "Error del servidor. Por favor inténtalo de nuevo.",
-    "aiUnavailable": "Servicio de IA temporalmente no disponible",
-    "profileLoad": "No se pudo cargar tu perfil",
-    "unauthorized": "Necesitas iniciar sesión para acceder a esta página",
-    "planRequired": "Esta función requiere un plan Pro o Enterprise"
-  }
+    "nav": {
+        "dashboard": "Panel principal",
+        "audit": "Auditoría de perfil",
+        "keywords": "Optimizador SEO",
+        "ghostwriter": "Ghostwriter IA",
+        "roadmap": "Mapa de carrera",
+        "jobs": "Ofertas de trabajo",
+        "matching": "Matching IA",
+        "candidates": "Candidatos",
+        "settings": "Configuración"
+    },
+    "audit": {
+        "title": "Auditoría de Perfil 360°",
+        "subtitle": "Pega tu perfil de LinkedIn y obtén un score de empleabilidad con IA",
+        "placeholder": "Pega aquí tu sección About y experiencia laboral de LinkedIn...",
+        "analyzeButton": "Analizar mi perfil",
+        "analyzing": "Analizando tu perfil con IA...",
+        "score": "Score de Empleabilidad",
+        "strengths": "Puntos fuertes",
+        "improvements": "Áreas de mejora",
+        "missingKeywords": "Keywords que te faltan",
+        "actionPlan": "Plan de acción"
+    },
+    "ghostwriter": {
+        "title": "Ghostwriter IA",
+        "subtitle": "Genera posts de LinkedIn en tu voz",
+        "topicLabel": "¿Sobre qué quieres publicar?",
+        "toneLabel": "Tono",
+        "tones": {
+            "professional": "Profesional",
+            "casual": "Informal",
+            "thoughtLeader": "Líder de opinión"
+        },
+        "generateButton": "Generar post",
+        "generating": "Escribiendo tu post...",
+        "copyButton": "Copiar al portapapeles",
+        "regenerate": "Regenerar"
+    },
+    "matching": {
+        "title": "Matching IA",
+        "subtitle": "Encuentra los candidatos más compatibles para cada vacante",
+        "selectJob": "Selecciona una oferta de trabajo",
+        "runMatching": "Ejecutar matching IA",
+        "processing": "Comparando perfiles con IA...",
+        "matchScore": "Score de compatibilidad",
+        "strengths": "Puntos fuertes del candidato",
+        "gaps": "Carencias de habilidades",
+        "generateCoverLetter": "Generar carta de presentación"
+    },
+    "plans": {
+        "limitReached": "Has alcanzado el límite de tu plan",
+        "upgradeMessage": "Mejora a Pro para seguir usando esta función",
+        "freeLimit": "{{count}} análisis por mes en el plan gratuito"
+    },
+    "errors": {
+        "notFound": "Página no encontrada",
+        "serverError": "Error del servidor. Por favor inténtalo de nuevo.",
+        "aiUnavailable": "Servicio de IA temporalmente no disponible",
+        "profileLoad": "No se pudo cargar tu perfil",
+        "unauthorized": "Necesitas iniciar sesión para acceder a esta página",
+        "planRequired": "Esta función requiere un plan Pro o Enterprise"
+    }
 }
 ```
 
@@ -1008,12 +1021,12 @@ export const routing = defineRouting({
 
 > ⚠️ Estos archivos son **imprescindibles**. Sin ellos la UX es deficiente.
 
-| Archivo | Cuándo se activa | Qué debe mostrar |
-|---|---|---|
-| `loading.tsx` | Durante navegación o fetch de Server Components | Skeleton de la página específica |
-| `error.tsx` | Cuando un Server Component lanza un error | UI de error + botón reintentar |
-| `not-found.tsx` | Al llamar `notFound()` o ruta inexistente | Página 404 con navegación |
-| `global-error.tsx` | Error que rompe el layout raíz | Fallback mínimo sin layout |
+| Archivo            | Cuándo se activa                                | Qué debe mostrar                 |
+| ------------------ | ----------------------------------------------- | -------------------------------- |
+| `loading.tsx`      | Durante navegación o fetch de Server Components | Skeleton de la página específica |
+| `error.tsx`        | Cuando un Server Component lanza un error       | UI de error + botón reintentar   |
+| `not-found.tsx`    | Al llamar `notFound()` o ruta inexistente       | Página 404 con navegación        |
+| `global-error.tsx` | Error que rompe el layout raíz                  | Fallback mínimo sin layout       |
 
 **Regla:** Cada ruta del (candidate) y (recruiter) tiene su propio `loading.tsx` y `error.tsx`. Los errores de un módulo no afectan a los demás.
 
@@ -1031,7 +1044,7 @@ export default function AuditError({
 }) {
   const t = useTranslations('errors')
   return (
-    <div className="flex flex-col items-center justify-center min-h-[400px] gap-4">
+    <div className="flex flex-col items-center justify-center min-h-100 gap-4">
       <p className="text-destructive font-medium">{t('aiUnavailable')}</p>
       <button onClick={reset} className="btn-primary">{t('retry')}</button>
     </div>
@@ -1121,7 +1134,7 @@ POST /api/matching { jobId }
        │   Si no existe → generar con OpenAI → guardar
        │
        ├── 2. Búsqueda vectorial en PostgreSQL:
-       │   SELECT profiles.*, 
+       │   SELECT profiles.*,
        │     1 - (embedding <=> job_embedding) AS similarity
        │   FROM profiles
        │   WHERE similarity > 0.65
@@ -1188,25 +1201,26 @@ OUTPUT FORMAT: Respond ONLY with valid JSON, no markdown, no extra text:
   "actionItems": [
     { "order": 1, "action": "...", "impact": "high", "timeToImplement": "10 min" }
   ]
-}`
+}`;
 
 export function buildAuditPrompt(
-  profileText: string,
-  targetRole: string,
-  language: 'en' | 'es'
+    profileText: string,
+    targetRole: string,
+    language: "en" | "es",
 ): string {
-  const langInstruction = language === 'es'
-    ? 'Write all text values in Spanish.'
-    : 'Write all text values in English.'
+    const langInstruction =
+        language === "es"
+            ? "Write all text values in Spanish."
+            : "Write all text values in English.";
 
-  return `${langInstruction}
+    return `${langInstruction}
 
 PROFILE TO ANALYZE:
 Target Role: ${targetRole}
 
 ${profileText}
 
-Perform the complete 360° audit following the system instructions.`
+Perform the complete 360° audit following the system instructions.`;
 }
 ```
 
@@ -1214,15 +1228,15 @@ Perform the complete 360° audit following the system instructions.`
 
 ```typescript
 // lib/utils/vectorSearch.ts
-import { prisma } from '@/lib/db/prisma'
+import { prisma } from "@/lib/db/prisma";
 
 export async function findMatchingCandidates(
-  jobEmbedding: number[],
-  minSimilarity: number = 0.65,
-  limit: number = 20
+    jobEmbedding: number[],
+    minSimilarity: number = 0.65,
+    limit: number = 20,
 ) {
-  // pgvector: operador <=> = distancia coseno
-  const results = await prisma.$queryRaw`
+    // pgvector: operador <=> = distancia coseno
+    const results = await prisma.$queryRaw`
     SELECT
       p.id,
       p."userId",
@@ -1236,8 +1250,8 @@ export async function findMatchingCandidates(
       AND 1 - (p.embedding <=> ${jobEmbedding}::vector) > ${minSimilarity}
     ORDER BY similarity DESC
     LIMIT ${limit}
-  `
-  return results
+  `;
+    return results;
 }
 ```
 
@@ -1248,22 +1262,24 @@ export async function findMatchingCandidates(
 // para aprender su estilo y voz antes de generar nuevo contenido
 
 export function buildGhostwriterPrompt(
-  topic: string,
-  tone: string,
-  userBio: string,
-  previousPosts: string[],  // Últimos 3-5 posts del usuario
-  language: 'en' | 'es'
+    topic: string,
+    tone: string,
+    userBio: string,
+    previousPosts: string[], // Últimos 3-5 posts del usuario
+    language: "en" | "es",
 ): string {
-  const langInstruction = language === 'es'
-    ? 'Escribe el post completamente en español.'
-    : 'Write the post entirely in English.'
+    const langInstruction =
+        language === "es"
+            ? "Escribe el post completamente en español."
+            : "Write the post entirely in English.";
 
-  const styleExamples = previousPosts.length > 0
-    ? `USER'S WRITING STYLE (learn and replicate):
-${previousPosts.map((p, i) => `--- Example ${i + 1} ---\n${p}`).join('\n\n')}`
-    : `No previous posts available. Create an authentic, ${tone} voice.`
+    const styleExamples =
+        previousPosts.length > 0
+            ? `USER'S WRITING STYLE (learn and replicate):
+${previousPosts.map((p, i) => `--- Example ${i + 1} ---\n${p}`).join("\n\n")}`
+            : `No previous posts available. Create an authentic, ${tone} voice.`;
 
-  return `${langInstruction}
+    return `${langInstruction}
 
 USER PROFILE:
 ${userBio}
@@ -1286,7 +1302,7 @@ Respond ONLY with JSON:
   "hashtags": ["#tag1", "#tag2", "#tag3", "#tag4", "#tag5"],
   "estimatedReach": "high|medium|low",
   "bestTimeToPost": "<day and time recommendation>"
-}`
+}`;
 }
 ```
 
@@ -1300,57 +1316,57 @@ Respond ONLY with JSON:
 // lib/stripe/plans.ts
 
 export const PLANS = {
-  FREE: {
-    name: 'Free',
-    price: 0,
-    limits: {
-      analysisPerMonth: 3,        // Auditorías 360° al mes
-      contentPerMonth: 5,         // Posts generados al mes
-      savedAnalyses: 10,          // Análisis guardados en historial
-      jobPositions: 0,            // Ofertas de trabajo (solo B2B)
-      matchingPerMonth: 0,        // Matchmaking (solo B2B)
-      keywordOptimizations: 2,    // Análisis de keywords al mes
-    }
-  },
-  PRO: {
-    name: 'Pro',
-    price: 19,                    // €19/mes
-    stripePriceId: process.env.STRIPE_PRO_PRICE_ID,
-    limits: {
-      analysisPerMonth: 30,
-      contentPerMonth: 60,
-      savedAnalyses: -1,          // Ilimitado (-1 = sin límite)
-      jobPositions: 0,
-      matchingPerMonth: 0,
-      keywordOptimizations: -1,
-    }
-  },
-  ENTERPRISE: {
-    name: 'Enterprise',
-    price: 99,                    // €99/mes por organización
-    stripePriceId: process.env.STRIPE_ENTERPRISE_PRICE_ID,
-    limits: {
-      analysisPerMonth: -1,
-      contentPerMonth: -1,
-      savedAnalyses: -1,
-      jobPositions: -1,           // Ofertas ilimitadas
-      matchingPerMonth: -1,       // Matching ilimitado
-      keywordOptimizations: -1,
-      teamMembers: 10,            // Hasta 10 recruiters por organización
-    }
-  }
-} as const
+    FREE: {
+        name: "Free",
+        price: 0,
+        limits: {
+            analysisPerMonth: 3, // Auditorías 360° al mes
+            contentPerMonth: 5, // Posts generados al mes
+            savedAnalyses: 10, // Análisis guardados en historial
+            jobPositions: 0, // Ofertas de trabajo (solo B2B)
+            matchingPerMonth: 0, // Matchmaking (solo B2B)
+            keywordOptimizations: 2, // Análisis de keywords al mes
+        },
+    },
+    PRO: {
+        name: "Pro",
+        price: 19, // €19/mes
+        stripePriceId: process.env.STRIPE_PRO_PRICE_ID,
+        limits: {
+            analysisPerMonth: 30,
+            contentPerMonth: 60,
+            savedAnalyses: -1, // Ilimitado (-1 = sin límite)
+            jobPositions: 0,
+            matchingPerMonth: 0,
+            keywordOptimizations: -1,
+        },
+    },
+    ENTERPRISE: {
+        name: "Enterprise",
+        price: 99, // €99/mes por organización
+        stripePriceId: process.env.STRIPE_ENTERPRISE_PRICE_ID,
+        limits: {
+            analysisPerMonth: -1,
+            contentPerMonth: -1,
+            savedAnalyses: -1,
+            jobPositions: -1, // Ofertas ilimitadas
+            matchingPerMonth: -1, // Matching ilimitado
+            keywordOptimizations: -1,
+            teamMembers: 10, // Hasta 10 recruiters por organización
+        },
+    },
+} as const;
 
 // Hook para verificar límites antes de cada acción
 export function checkPlanLimit(
-  currentCount: number,
-  planLimit: number
+    currentCount: number,
+    planLimit: number,
 ): { allowed: boolean; remaining: number } {
-  if (planLimit === -1) return { allowed: true, remaining: -1 }
-  return {
-    allowed: currentCount < planLimit,
-    remaining: Math.max(0, planLimit - currentCount)
-  }
+    if (planLimit === -1) return { allowed: true, remaining: -1 };
+    return {
+        allowed: currentCount < planLimit,
+        remaining: Math.max(0, planLimit - currentCount),
+    };
 }
 ```
 
@@ -1410,29 +1426,29 @@ NEXT_PUBLIC_APP_URL="http://localhost:3000"
 // Cada vez que un usuario se registra en Clerk,
 // este webhook crea el registro en nuestra PostgreSQL
 
-import { Webhook } from 'svix'
-import { prisma } from '@/lib/db/prisma'
+import { Webhook } from "svix";
+import { prisma } from "@/lib/db/prisma";
 
 export async function POST(req: Request) {
-  const payload = await req.text()
-  const headers = Object.fromEntries(req.headers)
+    const payload = await req.text();
+    const headers = Object.fromEntries(req.headers);
 
-  const wh = new Webhook(process.env.CLERK_WEBHOOK_SECRET!)
-  const event = wh.verify(payload, headers) as any
+    const wh = new Webhook(process.env.CLERK_WEBHOOK_SECRET!);
+    const event = wh.verify(payload, headers) as any;
 
-  if (event.type === 'user.created') {
-    await prisma.user.create({
-      data: {
-        clerkId: event.data.id,
-        email: event.data.email_addresses[0].email_address,
-        name: `${event.data.first_name} ${event.data.last_name}`.trim(),
-        imageUrl: event.data.image_url,
-        // El rol lo elige el usuario en el onboarding
-      }
-    })
-  }
+    if (event.type === "user.created") {
+        await prisma.user.create({
+            data: {
+                clerkId: event.data.id,
+                email: event.data.email_addresses[0].email_address,
+                name: `${event.data.first_name} ${event.data.last_name}`.trim(),
+                imageUrl: event.data.image_url,
+                // El rol lo elige el usuario en el onboarding
+            },
+        });
+    }
 
-  return Response.json({ received: true })
+    return Response.json({ received: true });
 }
 ```
 
@@ -1441,6 +1457,7 @@ export async function POST(req: Request) {
 ## 12. Fases de desarrollo
 
 ### Fase 1 — Fundamentos (Semana 1-2)
+
 **Objetivo:** Estructura del proyecto completa y funcional
 
 - [ ] Inicializar Next.js 15 con TypeScript + Tailwind + Shadcn/UI
@@ -1459,6 +1476,7 @@ export async function POST(req: Request) {
 ---
 
 ### Fase 2 — Perfil de usuario y onboarding (Semana 3)
+
 **Objetivo:** Captura de datos del usuario
 
 - [ ] Flujo de onboarding en 3 pasos (con `next/navigation` y estado)
@@ -1473,6 +1491,7 @@ export async function POST(req: Request) {
 ---
 
 ### Fase 3 — Auditoría 360° (Semana 4-5)
+
 **Objetivo:** El corazón del módulo candidato
 
 - [ ] Integración Claude API con manejo de errores robusto
@@ -1491,6 +1510,7 @@ export async function POST(req: Request) {
 ---
 
 ### Fase 4 — Ghostwriter AI (Semana 6)
+
 **Objetivo:** Generador de contenido personalizado
 
 - [ ] Prompt de ghostwriter con aprendizaje de voz
@@ -1505,6 +1525,7 @@ export async function POST(req: Request) {
 ---
 
 ### Fase 5 — SEO Keywords + Career Roadmap (Semana 7)
+
 **Objetivo:** Completar módulo candidato
 
 - [ ] Keyword optimizer: comparar perfil vs. keywords del sector objetivo
@@ -1518,6 +1539,7 @@ export async function POST(req: Request) {
 ---
 
 ### Fase 6 — Módulo Recruiter B2B (Semana 8-9)
+
 **Objetivo:** CRUD de ofertas + matchmaking
 
 - [ ] Clerk Organizations para gestión de equipos de empresa
@@ -1533,6 +1555,7 @@ export async function POST(req: Request) {
 ---
 
 ### Fase 7 — Monetización (Semana 10)
+
 **Objetivo:** Stripe integrado y planes funcionando
 
 - [ ] Integración Stripe Checkout y Customer Portal
@@ -1547,6 +1570,7 @@ export async function POST(req: Request) {
 ---
 
 ### Fase 8 — Pulido y producción (Semana 11-12)
+
 **Objetivo:** Listo para usuarios reales
 
 - [ ] Sentry configurado para monitorización de errores
@@ -1566,6 +1590,7 @@ export async function POST(req: Request) {
 > 📅 **Última actualización:** Fase 0 — Planificación completada
 
 ### ✅ Completado
+
 - [x] Definición completa del producto y visión
 - [x] Elección definitiva del stack tecnológico
 - [x] Diseño de arquitectura del sistema
@@ -1577,6 +1602,7 @@ export async function POST(req: Request) {
 - [x] Documentación completa del proyecto (este archivo)
 
 ### 🔄 Próximo paso inmediato
+
 ```bash
 # FASE 1: Ejecutar este comando para iniciar el proyecto
 npx create-next-app@latest linkedin-ai-strategist \
@@ -1587,27 +1613,28 @@ npx create-next-app@latest linkedin-ai-strategist \
 ```
 
 ### ❌ Pendiente
+
 - Todo el desarrollo (ver Fases 1-8)
 
 ---
 
 ## 14. Decisiones técnicas tomadas
 
-| Decisión | Elección | Alternativa descartada | Motivo |
-|---|---|---|---|
-| Framework | Next.js 15 | Remix / Vite | Estándar del mercado, SSR, mejor ecosistema |
-| UI Components | Shadcn/UI + Tailwind | MUI / Chakra | Sin vendor lock-in, full control del código |
-| Auth | Clerk | NextAuth v5 | Gestión de organizaciones nativa (B2B), roles out-of-the-box |
-| DB | PostgreSQL (Supabase) | PlanetScale / MongoDB | pgvector integrado, Storage, RLS, dashboard visual |
-| Vector Search | pgvector | Pinecone / Weaviate | Misma DB = queries JOIN, sin servicio extra |
-| IA principal | Claude (Anthropic) | OpenAI GPT-4o | Mejor escritura en español, JSON output más fiable |
-| IA backup | Gemini Pro | GPT-3.5 | Más barato para análisis masivos, buena calidad |
-| Embeddings | OpenAI text-embedding-3-small | Cohere | Mejor calidad/precio para matchmaking semántico |
-| Pagos | Stripe | LemonSqueezy | Más robusto, mejor soporte de organizaciones B2B |
-| Email | Resend + React Email | SendGrid | API moderna, templates en JSX/TSX |
-| i18n | next-intl | react-i18next | Integración nativa App Router, soporte SSR/RSC |
-| Monitorización | Sentry | Datadog / LogRocket | Gratuito para startups, integración Next.js excelente |
-| Deploy | Vercel | Railway / Render | Optimizado para Next.js, Edge Functions, Analytics |
+| Decisión       | Elección                      | Alternativa descartada | Motivo                                                       |
+| -------------- | ----------------------------- | ---------------------- | ------------------------------------------------------------ |
+| Framework      | Next.js 15                    | Remix / Vite           | Estándar del mercado, SSR, mejor ecosistema                  |
+| UI Components  | Shadcn/UI + Tailwind          | MUI / Chakra           | Sin vendor lock-in, full control del código                  |
+| Auth           | Clerk                         | NextAuth v5            | Gestión de organizaciones nativa (B2B), roles out-of-the-box |
+| DB             | PostgreSQL (Supabase)         | PlanetScale / MongoDB  | pgvector integrado, Storage, RLS, dashboard visual           |
+| Vector Search  | pgvector                      | Pinecone / Weaviate    | Misma DB = queries JOIN, sin servicio extra                  |
+| IA principal   | Claude (Anthropic)            | OpenAI GPT-4o          | Mejor escritura en español, JSON output más fiable           |
+| IA backup      | Gemini Pro                    | GPT-3.5                | Más barato para análisis masivos, buena calidad              |
+| Embeddings     | OpenAI text-embedding-3-small | Cohere                 | Mejor calidad/precio para matchmaking semántico              |
+| Pagos          | Stripe                        | LemonSqueezy           | Más robusto, mejor soporte de organizaciones B2B             |
+| Email          | Resend + React Email          | SendGrid               | API moderna, templates en JSX/TSX                            |
+| i18n           | next-intl                     | react-i18next          | Integración nativa App Router, soporte SSR/RSC               |
+| Monitorización | Sentry                        | Datadog / LogRocket    | Gratuito para startups, integración Next.js excelente        |
+| Deploy         | Vercel                        | Railway / Render       | Optimizado para Next.js, Edge Functions, Analytics           |
 
 ---
 
@@ -1681,10 +1708,12 @@ if (!ANTHROPIC_API_KEY) throw new Error('Missing ANTHROPIC_API_KEY')
 ### Cómo continuar en cada sesión
 
 **Al inicio de cada sesión de desarrollo, di:**
-> *"Estoy trabajando en el proyecto LinkedIn AI Strategist. Aquí está el documento maestro: [pega este archivo]. Actualmente estoy en la Fase X. El último archivo que terminé fue [nombre]. Ahora necesito [tarea específica]."*
+
+> _"Estoy trabajando en el proyecto LinkedIn AI Strategist. Aquí está el documento maestro: [pega este archivo]. Actualmente estoy en la Fase X. El último archivo que terminé fue [nombre]. Ahora necesito [tarea específica]."_
 
 **Al terminar una tarea:**
-> *"He completado [tarea]. Aquí está el código: [pega código]. Marca este item como ✅ en el documento y dime el siguiente paso de la Fase X."*
+
+> _"He completado [tarea]. Aquí está el código: [pega código]. Marca este item como ✅ en el documento y dime el siguiente paso de la Fase X."_
 
 ### Comandos de referencia rápida
 
@@ -1723,7 +1752,7 @@ vercel --prod
 ### Disclaimer legal (obligatorio en la app)
 
 ```
-⚠️ LinkedIn AI Strategist es una herramienta de análisis y optimización 
+⚠️ LinkedIn AI Strategist es una herramienta de análisis y optimización
 independiente. No está afiliada, respaldada ni patrocinada por LinkedIn Corporation.
 Los análisis y recomendaciones son generados por IA y tienen carácter orientativo.
 Los resultados pueden variar según el sector, mercado laboral y otras variables.
@@ -1745,5 +1774,5 @@ Los resultados pueden variar según el sector, mercado laboral y otras variables
 
 ---
 
-*Documento creado el 20/03/2026 · LinkedIn AI Strategist · v1.0*
-*Stack: Next.js 15 · TypeScript · Tailwind · Shadcn/UI · Clerk · Supabase · pgvector · Claude API · Stripe · next-intl*
+_Documento creado el 20/03/2026 · LinkedIn AI Strategist · v1.0_
+_Stack: Next.js 15 · TypeScript · Tailwind · Shadcn/UI · Clerk · Supabase · pgvector · Claude API · Stripe · next-intl_

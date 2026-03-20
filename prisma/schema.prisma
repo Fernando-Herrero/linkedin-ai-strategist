@@ -1,0 +1,186 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  directUrl  = env("DIRECT_URL")
+  extensions = [pgvector(map: "vector")]
+}
+
+enum UserRole {
+  CANDIDATE
+  RECRUITER
+  ADMIN
+}
+
+enum PlanType {
+  FREE
+  PRO
+  ENTERPRISE
+}
+
+enum MatchStatus {
+  PENDING
+  SHORTLISTED
+  CONTACTED
+  REJECTED
+}
+
+model User {
+  id               String    @id @default(cuid())
+  clerkId          String    @unique
+  email            String    @unique
+  name             String?
+  imageUrl         String?
+  role             UserRole  @default(CANDIDATE)
+  plan             PlanType  @default(FREE)
+  planExpiresAt    DateTime?
+  stripeCustomerId String?   @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  profile          Profile?
+  analysisHistory  AnalysisHistory[]
+  generatedContent GeneratedContent[]
+  organization     Organization?      @relation(fields: [organizationId], references: [id])
+  organizationId   String?
+  jobPositions     JobPosition[]
+
+  monthlyAnalysisCount Int      @default(0)
+  monthlyContentCount  Int      @default(0)
+  lastResetAt          DateTime @default(now())
+
+  @@map("users")
+}
+
+model Profile {
+  id             String   @id @default(cuid())
+  userId         String   @unique
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  linkedinUrl    String?
+  headline       String?
+  aboutText      String?  @db.Text
+  experienceJson Json?
+  educationJson  Json?
+  skillsList     String[]
+  languagesList  String[]
+
+  targetRole     String?
+  targetIndustry String?
+  targetLocation String?
+
+  latestScore    Int?
+  lastAnalyzedAt DateTime?
+
+  embedding Unsupported("vector(1536)")?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("profiles")
+}
+
+model AnalysisHistory {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  profileSnapshot String  @db.Text
+  targetRole      String?
+
+  overallScore    Int
+  scoreBreakdown  Json
+  strengths       String[]
+  improvements    String[]
+  keywordsMissing String[]
+  keywordsPresent String[]
+  rewrittenAbout  String?  @db.Text
+  actionItems     Json
+  rawAiResponse   String?  @db.Text
+
+  aiModel   String
+  createdAt DateTime @default(now())
+
+  @@map("analysis_history")
+}
+
+model GeneratedContent {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  topic           String
+  tone            String
+  body            String   @db.Text
+  hashtags        String[]
+  estimatedReach  String?
+  bestTimeToPost  String?
+  rawAiResponse   String?  @db.Text
+
+  aiModel   String
+  createdAt DateTime @default(now())
+
+  @@map("generated_content")
+}
+
+model Organization {
+  id      String @id @default(cuid())
+  clerkOrgId String @unique
+  name    String
+  logoUrl String?
+  plan    PlanType @default(ENTERPRISE)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  members      User[]
+  jobPositions JobPosition[]
+
+  @@map("organizations")
+}
+
+model JobPosition {
+  id             String @id @default(cuid())
+  userId         String
+  user           User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organizationId String?
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+
+  title          String
+  description    String  @db.Text
+  requirements   String? @db.Text
+  location       String?
+  salary         String?
+  isActive       Boolean @default(true)
+
+  embedding Unsupported("vector(1536)")?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  matches JobMatch[]
+
+  @@map("job_positions")
+}
+
+model JobMatch {
+  id            String      @id @default(cuid())
+  jobPositionId String
+  jobPosition   JobPosition @relation(fields: [jobPositionId], references: [id], onDelete: Cascade)
+  candidateId   String
+
+  similarityScore Float
+  strengths       String[]
+  gaps            String[]
+  coverLetter     String?  @db.Text
+  status          MatchStatus @default(PENDING)
+
+  createdAt DateTime @default(now())
+
+  @@map("job_matches")
+}
